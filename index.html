@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С ДНЕМ РОЖДЕНИЯ, ДИМА!</title>
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg: #0a0f1d;
+            --card-bg: #131a30;
+            --text: #ffffff;
+            --accent: #ff0055;
+            --gift-blue: #0077ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+            border: 1px solid var(--primary);
+            text-align: center;
+            position: relative;
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            margin-top: 0;
+        }
+
+        .map-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: var(--bg);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .input-code {
+            width: 90%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+            outline: none;
+        }
+
+        .option-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text);
+            text-align: left;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            font-size: 15px;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        .congrats-box {
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px dashed var(--primary);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #e0fffa;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            width: 100%;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: 0.3s;
+        }
+
+        .gift-box {
+            font-size: 100px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 30px 0;
+            transition: transform 0.3s;
+            animation: bounce 1s infinite alternate;
+        }
+        .gift-box:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 1;
+            font-size: 24px;
+            z-index: 9999;
+            animation: flyUp 1.5s ease-out forwards;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--mx), var(--my)) scale(0.5); opacity: 0; }
+        }
+
+        #btn-no {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .letter-content {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            white-space: pre-line;
+            font-size: 15px;
+            margin-top: 20px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- MÀN HÌNH 1 -->
+    <div id="start-screen" class="screen active">
+        <h1>✈️ ДИМА'S АВИАБАЗА</h1>
+        <p style="color: #aaa;">ВВЕДИТЕ СЕКРЕТНЫЙ КОД ДЛЯ ЗАПУСКА ДВИГАТЕЛЕЙ:</p>
+        <p style="color: var(--primary); font-weight: bold; font-size: 18px;">Кто самый красивый парень в мире?</p>
+        <input type="text" id="secret-code" class="input-code" placeholder="Введите никнейм...">
+        <button class="btn" onclick="checkSecretCode()">АКТИВИРОВАТЬ ДВИГАТЕЛЬ ➔</button>
+        <p style="color: var(--accent); margin-top: 25px; font-size: 13px; font-weight: bold;">
+            ⚠️ ВНИМАНИЕ: Если ответишь неправильно, Ань Тху будет сильно смеяться над тобой! Ха-ха-ха!
+        </p>
+    </div>
+
+    <!-- MÀN HÌNH 2 -->
+    <div id="game-screen" class="screen">
+        <div class="map-status">
+            <span id="current-map-name" style="color: var(--primary); font-weight:bold;">Уровень 1</span>
+            <span id="question-number">Вопрос 1/3</span>
+        </div>
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        
+        <h3 id="question-text" style="text-align: left; line-height: 1.5;">Вопрос?</h3>
+        <div id="options-container"></div>
+    </div>
+
+    <!-- MÀN HÌNH 3 -->
+    <div id="reward-screen" class="screen">
+        <h2 style="color: var(--primary)">🎉 УРОВЕНЬ ПРОЙДЕН!</h2>
+        <div class="congrats-box" id="congrats-text">Поздравление...</div>
+        <button class="btn" id="next-map-btn" onclick="nextMap()">СЛЕДУЮЩИЙ УРОВЕНЬ ➔</button>
+    </div>
+
+    <!-- MÀN HÌNH 4 -->
+    <div id="gift-screen" class="screen">
+        <h2>🎁 У кого-то есть для тебя сюрприз...</h2>
+        <p style="color: #aaa;">(Нажми на подарок, чтобы открыть его!)</p>
+        <div class="gift-box" onclick="openGift()">🟦</div>
+    </div>
+
+    <!-- MÀN HÌNH 5 -->
+    <div id="survey-screen" class="screen">
+        <h1 style="color: gold;">🎂 С ДНЕМ РОЖДЕНИЯ, ДИМА! 🎂</h1>
+        <p id="survey-text" style="font-size: 18px; font-weight: bold; margin: 30px 0;">Тебе нравится этот подарок?</p>
+        <div style="display: flex; gap: 20px; justify-content: center; position: relative; min-height: 80px;" id="survey-buttons">
+            <button class="btn" style="width: 120px; background: var(--primary); color: #000;" onclick="clickYes()">YESSS</button>
+            <button class="btn" style="width: 120px; border-color: var(--accent); color: var(--accent);" id="btn-no" onclick="clickNo()">NO</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH 6 -->
+    <div id="victory-screen" class="screen">
+        <div style="font-size: 50px; margin-bottom: 10px;">🎂</div>
+        <p style="font-weight: bold; color: gold; font-size: 18px;">Желаем тебе самого прекрасного дня рождения в жизни!</p>
+        <hr style="border: 1px solid rgba(0,255,204,0.2); margin: 20px 0;">
+        <h2 style="color: var(--primary); text-align: left;">📩 Сообщение от Ань Тху:</h2>
+        
+        <div class="letter-content">
+**Дорогой Дмитрий Евгеньевич!**
+
+Сегодня великий день.
+
+Мир стал на один год старше... потому что ты тоже стал на один год старше.
+
+По этому случаю торжественно объявляю:
+
+🎉 Пусть холодильник никогда не будет пустым.
+🎉 Пусть internet работает быстрее твоих мыслей.
+🎉 Пусть будильник иногда забывает, что существует.
+🎉 Пусть деньги размножаются быстрее, чем домашние задания.
+🎉 Пусть все проблемы увидят тебя и сами уйдут.
+
+Желаю тебе оставаться таким же классным человеком, с которым можно говорить обо всём — от серьёзных вещей до полного бреда.
+
+Спасибо, что терпишь мои сообщения. Это уже заслуживает отдельной медали.
+
+Сегодня тебе официально разрешается:
+— есть сколько угодно торта;
+— ничего не делать;
+— принимать поздравления как настоящая знаменитость.
+
+А завтра... снова становись нормальным человеком.
+
+С днём рождения, Дима!
+
+Пусть этот год будет счастливым, спокойным и полным крутых моментов.
+
+И самое главное...
+
+Не взрослей слишком быстро.
+
+Нам ещё нужно успеть сделать достаточно глупостей.
+
+**P.S. Пока ты читал это письмо, Ань Тху уже смеялась над тобой. 😂**
+        </div>
+        <button class="btn" style="margin-top: 25px;" onclick="resetGame()">ИГРАТЬ СНОВА</button>
+    </div>
+</div>
+
+<script>
+    const correctCompliments = [
+        "Respect Sigma Boy! 🗿",
+        "Ну конечно! Самый красивый парень в мире — это же ты!😎✨",
+        "Вот это уровень! Просто огонь! 🔥😎",
+        "Вот это вершина! Настоящий пилот номер один!✈️🔥",
+        "Слишком плавно — даже радар снимает перед тобой шляпу!🎯"
+    ];
+
+    const noTexts = [
+        "В твой день рождения?!",
+        "Но ведь у тебя есть тортик...",
+        "Я даже упаковала подарок для тебя :((",
+        "Ну нажми 'YESSS' пожалуйста!"
+    ];
+    let noClickCount = 0;
+
+    const gameData = [
+        {
+            mapName: "Уровень 1: МиГ-15 (Легенда)",
+            wish: "Отлично! Ты укротил легендарный МиГ-15. Желаем, чтобы скорость решения домашних заданий у Димы была такой же молниеносной, как взлет этого истребителя, и никакой лени!",
+            questions: [
+                {
+                    q: "Крылья МиГ-15 сильно скошены назад (стреловидное крыло). Зачем нужна такая конструкция?",
+                    options: ["Чтобы самолет выглядел стильно и круто в воздухе.", "Помогает летать на сверхзвуковых скоростях, чтобы крылья не оторвало ветром.", "Чтобы пилот мог зацепиться за хвост автобуса, если кончится топливо."],
+                    answer: 1
+                },
+                {
+                    q: "Во время Корейской войны американские пилоты были в шоке от встречи с МиГ-15. Почему?",
+                    options: ["Потому что этот самолет летал и набирал высоту как настоящий монстр.", "Потому что он был покрашен в ярко-розовый цвет.", "Потому что пилоты МиГ-15 вежливо махали им рукой при встрече."],
+                    answer: 0
+                },
+                {
+                    q: "Вооружение МиГ-15 включало мощную 37-мм пушку. Насколько сильным был ее выстрел?",
+                    options: ["Только чтобы пугать воробьев.", "От отдачи выстрела самолет сильно замедлял свой полет.", "Один точный выстрел мог превратить огромный вражеский бомбарсировщик в пепел."],
+                    answer: 2
+                }
+            ]
+        },
+        {
+            mapName: "Уровень 2: Lockheed F-117 (Невидимка)",
+            wish: "Даже радары не видят F-117, но мы-то видим, какой Дима крутой! Желаем тебе суперспособности 'невидимки': легко ускользать от всех неудач, от камер учителей, когда занимаешься своими делами, и от родительского гнева!",
+            questions: [
+                {
+                    q: "F-117 выглядит угловатым и плоским, как необработанный алмаз. Зачем нужен этот странный дизайн?",
+                    options: ["В то время инженеры еще не умели рисовать плавные линии на компьютере.", "Outer волны вражеских радаров отражались в другую сторону, делая самолет невидимым.", "Чтобы при падении на землю он был похож на обычный камень."],
+                    answer: 1
+                },
+                {
+                    q: "У F-117 была одна безумная особенность — у него не было активного радара для поиска пути. Почему?",
+                    options: ["Не хватило бюджета на установку.", "Включить радар — это как включить фонарик в полной темноте, сразу выдашь себя.", "Потому что пилоты летали по Google Maps на телефоне."],
+                    answer: 1
+                },
+                {
+                    q: "Несмотря на крутизну, один F-117 был сбит старым зенитным комплексом в Сербии в 1999 году. Каким лозунгом сербы тогда дразнили Америку?",
+                    options: ["'Извините, мы не знали, что он невидимый!'", "'Американские самолеты сделаны из пенопласта!'", "'Летите домой и учитесь летать заново!'"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            mapName: "Уровень 3: F-22 Raptor (Король неба)",
+            wish: "Одолеть уровень с F-22 — это высший класс! Желаем Диме стать эксклюзивным и бесценным 'редким кадром', прямо как этот самолет, и иметь огромный кошелек, чтобы купить собственный бизнес-джет!",
+            questions: [
+                {
+                    q: "F-22 обладает возможностью 'сверхзвукового крейсерского полета' (Supercruise). Что это значит?",
+                    options: ["Он летит быстрее скорости звука БЕЗ включения прожорливого форсажа.", "Он автоматически летает за завтраком для пилота.", "Он может лететь и крутить музыку на максимальной громкости без хрипа в динамиках."],
+                    answer: 0
+                },
+                {
+                    q: "Сопла двигателей F-22 могут отклоняться вверх и вниз (управляемый вектор тяги). Что это позволяет делать?",
+                    options: ["Мгновенно задирать нос и крутиться на месте в воздухе, уклоняясь от ракет.", "Дуть воздухом на землю, чтобы охладить полосу в жару.", "Вилять хвостом, как собачка, приветствуя другие самолеты."],
+                    answer: 0
+                },
+                {
+                    q: "Почему в США действует закон, строго запрещающий продавать F-22 в другие страны?",
+                    options: ["Боятся, что другие страны покрасят его в некрасивый цвет.", "Он содержит слишком много секретных технологий господства в воздухе.", "Стоимость доставки самолета в другие страны слишком дорогая."],
+                    answer: 1
+                }
+            ]
+        },
+        {
+            mapName: "Уровень 4: Су-57 (Мастер маневра)",
+            wish: "Ура! Вы прошли все уровни боевой авиации!",
+            questions: [
+                {
+                    q: "В НАТО этому самолету дали кодовое имя 'Felon' (Преступник). Почему Россия не стала менять название?",
+                    options: ["Звучит грозно и опасно, пугает противника еще до начала боя.", "Потому что пилоты Су-57 часто забывают пристегиваться.", "Потому что этот самолет часто 'ворует' топливо у соседей."],
+                    answer: 0
+                },
+                {
+                    q: "У Су-57 есть знаменитый трюк высшего пилотажа 'Кобра Пугачева'. Что происходит во время его выполнения?",
+                    options: ["Самолет автоматически трансформируется в гигантскую змею.", "Он резко задирает нос на 120 градусов, тормозя в воздухе, пропускает врага вперед.", "Самолет начинает лететь задом наперед."],
+                    answer: 1
+                },
+                {
+                    q: "Где Су-57 прячет все свои ракеты и бомбы, чтобы оставаться невидимым для радаров?",
+                    options: ["Они висят под крыльями, но прикрыты брезентом.", "Они спрятаны во внутренних отсеках внутри фюзеляжа и выдвигаются только при стрельбе.", "Пилот держит их на коленях и выбрасывает вручную через окно."],
+                    answer: 1
+                }
+            ]
+        }
+    ];
+
+    let currentMapIndex = 0;
+    let currentQuestionIndex = 0;
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function checkSecretCode() {
+        const code = document.getElementById('secret-code').value.trim().toLowerCase();
+        if (code === 'дима' || code === 'дими' || code === 'димочка') {
+            startGame();
+        } else {
+            triggerFail("Неверный код доступа! Робот Ань Тху смеется над тобой: ХА-ХА-ХА! 🤣");
+        }
+    }
+
+    function startGame() {
+        currentMapIndex = 0;
+        currentQuestionIndex = 0;
+        loadQuestion();
+        showScreen('game-screen');
+    }
+
+    function loadQuestion() {
+        const map = gameData[currentMapIndex];
+        const question = map.questions[currentQuestionIndex];
+        
+        document.getElementById('current-map-name').innerText = map.mapName;
+        document.getElementById('question-number').innerText = `Вопрос ${currentQuestionIndex + 1}/${map.questions.length}`;
+        document.getElementById('question-text').innerText = question.q;
+        
+        const percent = (currentQuestionIndex / map.questions.length) * 100;
+        document.getElementById('progress-fill').style.width = percent + '%';
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        question.options.forEach((opt, index) => {
+            const button = document.createElement('button');
+            button.className = 'option-btn';
+            button.innerText = opt;
+            button.onclick = () => checkAnswer(index);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function checkAnswer(selectedIndex) {
+        const map = gameData[currentMapIndex];
+        const question = map.questions[currentQuestionIndex];
+
+        if (selectedIndex === question.answer) {
+            const randomCompliment = correctCompliments[Math.floor(Math.random() * correctCompliments.length)];
+            alert(randomCompliment);
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < map.questions.length) {
+                loadQuestion();
+            } else {
+                showReward();
+            }
+        } else {
+            triggerFail("ХА-ХА-ХА! 🤣 Ань Тху сейчас смеётся над тобой! Ты выбрал неправильный ответ! Возвращайся на старт, братишка! Попробуй ещё раз, может, в этот раз тебе повезёт! 🤫💥");
+        }
+    }
+
+    function triggerFail(msg) {
+        alert(msg);
+        document.getElementById('secret-code').value = '';
+        showScreen('start-screen');
+    }
+
+    function showReward() {
+        const map = gameData[currentMapIndex];
+        if (currentMapIndex === gameData.length - 1) {
+            showScreen('gift-screen');
+        } else {
+            document.getElementById('congrats-text').innerText = `"${map.wish}"`;
+            showScreen('reward-screen');
+        }
+    }
+
+    function nextMap() {
+        currentMapIndex++;
+        currentQuestionIndex = 0;
+        loadQuestion();
+        showScreen('game-screen');
+    }
+
+    function spawnParticles(iconsArray, count) {
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerText = iconsArray[Math.floor(Math.random() * iconsArray.length)];
+            p.style.left = Math.random() * window.innerWidth + 'px';
+            p.style.top = (window.innerHeight - 50) + 'px';
+            
+            const mx = (Math.random() - 0.5) * 300 + 'px';
+            const my = -(Math.random() * 400 + 300) + 'px';
+            p.style.setProperty('--mx', mx);
+            p.style.setProperty('--my', my);
+
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1500);
+        }
+    }
+
+    function openGift() {
+        spawnParticles(['🎂', '✈️', '🎉', '✨'], 40);
+        setTimeout(() => {
+            showScreen('survey-screen');
+        }, 600);
+    }
+
+    function clickNo() {
+        const btnNo = document.getElementById('btn-no');
+        const surveyText = document.getElementById('survey-text');
+
+        if (noClickCount < noTexts.length) {
+            surveyText.innerText = noTexts[noClickCount];
+            
+            const randomX = (Math.random() - 0.5) * 200;
+            const randomY = (Math.random() - 0.5) * 100;
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            
+            noClickCount++;
+        } else {
+            btnNo.style.display = 'none';
+            surveyText.innerText = "У тебя больше нет выбора! Нажмите «YESSS»!!! 😂";
+        }
+    }
+
+    function clickYes() {
+        spawnParticles(['🎂', '🎉', '✨'], 30);
+        setTimeout(() => spawnParticles(['🎂', '🎉', '✨'], 30), 400);
+        showScreen('victory-screen');
+    }
+
+    function resetGame() {
+        noClickCount = 0;
+        const btnNo = document.getElementById('btn-no');
+        if(btnNo) {
+            btnNo.style.display = 'inline-block';
+            btnNo.style.transform = 'none';
+        }
+        document.getElementById('survey-text').innerText = "Тебе нравится этот подарок?";
+        document.getElementById('secret-code').value = '';
+        showScreen('start-screen');
+    }
+</script>
+
+</body>
+</html>
